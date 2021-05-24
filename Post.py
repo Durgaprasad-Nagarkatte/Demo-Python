@@ -1,6 +1,7 @@
 import uuid
 import datetime
 import Threads
+import Service
 
 class Post:
     def __init__(self, title, content):
@@ -8,49 +9,25 @@ class Post:
         self.title = title
         self.content = content 
         self.timeStamp = datetime.datetime.now()
-        self.comments = Threads.Threads()
+        self.service = Service.Service()
 
     # Adding comments to the post
-    def addComment(self, idList, content):
-        if(len(idList) == 0):
-            self.comments.addThread(content)
-            return
-
-        thread = None
-        currentThread = self.comments
-        for i in range(len(idList)):
-            thread = currentThread.getThread(idList[i])
-            thread = thread.getChildThread()
-        thread.addThread(content)
+    def addComment(self, idList, text, author):
+        self.service.addComment(idList, text, author)
         
     # Editing comment
-    def editComment(self, idList, content):
-        if(len(idList) == 0):
-            raise Exception("Operation not suppored")
+    def editComment(self, idList, text):
+        self.service.editComment(idList, text)
 
-        thread = None
-        currentThread = self.comments
-        for i in range(len(idList)):
-            thread = currentThread.getThread(idList[i])
-            currentThread = thread.getChildThread()
-        thread.setContent(content)
-
+    # Method to delete the thread
     def deleteComment(self, idList):
-        if(len(idList) == 0):
-            raise Exception("operation not suppported")
-
-        thread = None
-        currentThread = self.comments
-        for i in range(len(idList)-1):
-            thread = currentThread.getThread(idList[i])
-            currentThread = thread.getChildThread()
-        print(thread.childThread.deleteThread(idList[-1]))
+        self.service.deleteComment(idList)
         
     def getAllComments(self):
-        return self.comments.getAllThreads();
+        return self.service.getComments()
 
     def __str__(self):
-        return f'Post({self.id},{self.title},{self.content},{self.comments})'
+        return f'Post({self.id},{self.title},{self.content}'
 
 
 
